@@ -10,6 +10,7 @@ namespace OatmealDome.Unravel;
 public class ThreadsClient
 {
     private const string ApiBaseUrl = "https://graph.threads.net/";
+    private const string UserOAuthAuthorizeBaseUrl = "https://threads.net/oauth/authorize";
     
     private static readonly HttpClient SharedClient = new HttpClient();
     
@@ -119,5 +120,58 @@ public class ThreadsClient
         string json = await message.Content.ReadAsStringAsync();
 
         return JsonSerializer.Deserialize<T>(json)!;
+    }
+    
+    //
+    // Authentication
+    //
+
+    public string Auth_GetUserOAuthAuthorizationUrl(string redirectUri, ThreadsPermission permissions,
+        string? state = null)
+    {
+        if ((permissions & ThreadsPermission.Basic) == 0)
+        {
+            throw new ThreadsException("Must request at least Basic permission");
+        }
+
+        List<string> scopeStrings = new List<string>();
+        
+        scopeStrings.Add("threads_basic");
+
+        if ((permissions & ThreadsPermission.ContentPublish) != 0)
+        {
+            scopeStrings.Add("threads_content_publish");
+        }
+
+        if ((permissions & ThreadsPermission.ReadReplies) != 0)
+        {
+            scopeStrings.Add("threads_read_replies");
+        }
+
+        if ((permissions & ThreadsPermission.ManageReplies) != 0)
+        {
+            scopeStrings.Add("threads_manage_replies");
+        }
+
+        if ((permissions & ThreadsPermission.ManageInsights) != 0)
+        {
+            scopeStrings.Add("threads_manage_insights");
+        }
+        
+        Dictionary<string, string> parameters = new Dictionary<string, string>();
+        
+        parameters.Add("client_id", _clientId.ToString());
+        parameters.Add("redirect_uri", redirectUri);
+        parameters.Add("response_type", "code");
+        parameters.Add("scope", string.Join(',', scopeStrings));
+
+        if (state != null)
+        {
+            parameters.Add("state", state);
+        }
+
+        FormUrlEncodedContent urlContent = new FormUrlEncodedContent(parameters);
+        
+        return $"{UserOAuthAuthorizeBaseUrl}?{urlContent.ReadAsStringAsync().Result}";
     }
 }
