@@ -6,7 +6,7 @@ internal class LongLivedAccessTokenRequest : ThreadsQueryRequest
 {
     public override HttpMethod Method => HttpMethod.Get;
     
-    public override string Endpoint => "/refresh_access_token";
+    public override string Endpoint => "/access_token";
 
     public override ThreadsRequestAuthenticationType AuthenticationType =>
         ThreadsRequestAuthenticationType.Authenticated;
@@ -16,5 +16,12 @@ internal class LongLivedAccessTokenRequest : ThreadsQueryRequest
     {
         get;
         private set;
-    } = "th_refresh_token";
+    } = "th_exchange_token";
+
+    [ThreadsUrlEncodedParameterName("client_secret")]
+    public string ClientSecret
+    {
+        get;
+        set;
+    }
 }

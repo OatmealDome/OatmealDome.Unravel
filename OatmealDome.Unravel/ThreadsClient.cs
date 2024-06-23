@@ -209,13 +209,21 @@ public class ThreadsClient
     public async Task<ThreadsCredentials> Auth_GetLongLivedAccessToken()
     {
         VerifyCredentials();
-        
-        LongLivedAccessTokenRequest request = new LongLivedAccessTokenRequest();
+
+        if (Credentials!.CredentialType != ThreadsCredentialType.ShortLived)
+        {
+            throw new ThreadsException("Must have a short-lived access token");
+        }
+
+        LongLivedAccessTokenRequest request = new LongLivedAccessTokenRequest()
+        {
+            ClientSecret = _clientSecret
+        };
 
         LongLivedAccessTokenResponse
             response = await SendRequestWithJsonResponse<LongLivedAccessTokenResponse>(request);
 
-        Credentials!.CredentialType = ThreadsCredentialType.LongLived;
+        Credentials.CredentialType = ThreadsCredentialType.LongLived;
         Credentials.AccessToken = response.AccessToken;
         Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
 
