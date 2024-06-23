@@ -86,7 +86,7 @@ public class ThreadsClient
             }
             
             urlBuilder.Append("access_token=");
-            urlBuilder.Append(HttpUtility.UrlEncode(Credentials.AccessToken));
+            urlBuilder.Append(HttpUtility.UrlEncode(Credentials!.AccessToken));
         }
 
         string url = urlBuilder.ToString();
