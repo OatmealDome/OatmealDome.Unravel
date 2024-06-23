@@ -6,6 +6,9 @@ public class ThreadsClient
     
     private readonly HttpClient _httpClient;
 
+    private readonly ulong _clientId;
+    private readonly string _clientSecret;
+
     static ThreadsClient()
     {
         Version version = typeof(ThreadsClient).Assembly.GetName().Version!;
@@ -14,12 +17,15 @@ public class ThreadsClient
             $"Unravel/{version.Major}.{version.Minor}.{version.Revision}");
     }
 
-    public ThreadsClient(HttpClient httpClient)
+    public ThreadsClient(HttpClient httpClient, ulong clientId, string clientSecret)
     {
         _httpClient = httpClient;
+
+        _clientId = clientId;
+        _clientSecret = clientSecret;
     }
 
-    public ThreadsClient() : this(SharedClient)
+    public ThreadsClient(ulong clientId, string clientSecret) : this(SharedClient, clientId, clientSecret)
     {
         //
     }
