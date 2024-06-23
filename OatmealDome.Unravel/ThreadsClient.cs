@@ -221,6 +221,26 @@ public class ThreadsClient
 
         return Credentials;
     }
+
+    public async Task<ThreadsCredentials> Auth_RefreshLongLivedAccessToken()
+    {
+        VerifyCredentials();
+
+        if (Credentials!.CredentialType != ThreadsCredentialType.LongLived)
+        {
+            throw new ThreadsException("Must request long-lived access token first");
+        }
+        
+        RefreshLongLivedAccessTokenRequest request = new RefreshLongLivedAccessTokenRequest();
+
+        RefreshLongLivedAccessTokenResponse
+            response = await SendRequestWithJsonResponse<RefreshLongLivedAccessTokenResponse>(request);
+
+        Credentials.AccessToken = response.AccessToken;
+        Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
+
+        return Credentials;
+    }
     
     //
     // Publishing
