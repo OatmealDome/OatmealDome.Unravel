@@ -174,4 +174,43 @@ public class ThreadsClient
         
         return $"{UserOAuthAuthorizeBaseUrl}?{urlContent.ReadAsStringAsync().Result}";
     }
+
+    public async Task<ThreadsCredentials> Auth_GetShortLivedAccessToken(string code, string redirectUri)
+    {
+        ShortLivedAccessTokenRequest request = new ShortLivedAccessTokenRequest()
+        {
+            ClientId = _clientId,
+            ClientSecret = _clientSecret,
+            Code = code,
+            GrantType = "authorization_code",
+            RedirectUri = redirectUri
+        };
+
+        ShortLivedAccessTokenResponse response =
+            await SendRequestWithJsonResponse<ShortLivedAccessTokenResponse>(request);
+
+        Credentials = new ThreadsCredentials()
+        {
+            CredentialType = ThreadsCredentialType.ShortLived,
+            AccessToken = response.AccessToken,
+            Expiry = DateTime.UtcNow.AddHours(1), // https://developers.facebook.com/docs/threads/get-started
+            UserId = response.UserId.ToString()
+        };
+
+        return Credentials;
+    }
+
+    public async Task<ThreadsCredentials> Auth_GetLongLivedAccessToken()
+    {
+        LongLivedAccessTokenRequest request = new LongLivedAccessTokenRequest();
+
+        LongLivedAccessTokenResponse
+            response = await SendRequestWithJsonResponse<LongLivedAccessTokenResponse>(request);
+
+        Credentials!.CredentialType = ThreadsCredentialType.LongLived;
+        Credentials.AccessToken = response.AccessToken;
+        Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
+
+        return Credentials;
+    }
 }
