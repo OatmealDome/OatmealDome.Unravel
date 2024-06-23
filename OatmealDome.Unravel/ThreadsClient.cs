@@ -11,7 +11,7 @@ namespace OatmealDome.Unravel;
 
 public class ThreadsClient
 {
-    private const string ApiBaseUrl = "https://graph.threads.net/";
+    private const string ApiBaseUrl = "https://graph.threads.net";
     private const string UserOAuthAuthorizeBaseUrl = "https://threads.net/oauth/authorize";
     
     private static readonly HttpClient SharedClient = new HttpClient();
