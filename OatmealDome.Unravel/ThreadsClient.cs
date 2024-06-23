@@ -4,6 +4,8 @@ using System.Web;
 using OatmealDome.Unravel.Authentication;
 using OatmealDome.Unravel.Framework.Request;
 using OatmealDome.Unravel.Framework.Response;
+using OatmealDome.Unravel.Publishing;
+using OatmealDome.Unravel.User;
 
 namespace OatmealDome.Unravel;
 
@@ -212,5 +214,26 @@ public class ThreadsClient
         Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
 
         return Credentials;
+    }
+    
+    //
+    // User
+    //
+    
+    public async Task<ThreadsUserProfile> User_GetProfile(string userId)
+    {
+        GetUserProfileRequest request = new GetUserProfileRequest()
+        {
+            UserId = userId
+        };
+
+        GetUserProfileResponse response = await SendRequestWithJsonResponse<GetUserProfileResponse>(request);
+
+        return new ThreadsUserProfile(response);
+    }
+    
+    public async Task<ThreadsUserProfile> User_GetOwnProfile()
+    {
+        return await User_GetProfile("me");
     }
 }
