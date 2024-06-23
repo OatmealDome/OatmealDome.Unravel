@@ -1,3 +1,5 @@
+using OatmealDome.Unravel.Authentication;
+
 namespace OatmealDome.Unravel;
 
 public class ThreadsClient
@@ -8,6 +10,12 @@ public class ThreadsClient
 
     private readonly ulong _clientId;
     private readonly string _clientSecret;
+
+    public ThreadsCredentials? Credentials
+    {
+        get;
+        set;
+    }
 
     static ThreadsClient()
     {
