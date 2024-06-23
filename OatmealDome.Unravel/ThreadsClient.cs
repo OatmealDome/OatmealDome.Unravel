@@ -245,8 +245,14 @@ public class ThreadsClient
             response = await SendRequestWithJsonResponse<RefreshLongLivedAccessTokenResponse>(request);
 
         Credentials.AccessToken = response.AccessToken;
-        Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
 
+        // What exactly does an expiry of 0 seconds even mean? Right now, I just keep the previous expiry date if
+        // the API returns a token with 0 expiry.
+        if (response.Expiry != 0)
+        {
+            Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
+        }
+        
         return Credentials;
     }
     
