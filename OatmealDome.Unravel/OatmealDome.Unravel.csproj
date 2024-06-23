@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <PackageId>OatmealDome.Unravel</PackageId>
-        <Version>1.1.0</Version>
+        <Version>1.1.1</Version>
         <Authors>OatmealDome</Authors>
         <Description>Interact with the Threads API.</Description>
         <RepositoryUrl>https://github.com/OatmealDome/OatmealDome.Unravel</RepositoryUrl>
