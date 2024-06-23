@@ -75,16 +75,6 @@ public class ThreadsClient
         
         if (request.AuthenticationType == ThreadsRequestAuthenticationType.Authenticated)
         {
-            if (Credentials == null)
-            {
-                throw new ThreadsException("Must authenticate to use this API endpoint");
-            }
-
-            if (Credentials.Expiry < DateTime.UtcNow)
-            {
-                throw new ThreadsException("Credentials have expired");
-            }
-
             if (urlContent == null)
             {
                 urlBuilder.Append('?');
@@ -122,6 +112,19 @@ public class ThreadsClient
         string json = await message.Content.ReadAsStringAsync();
 
         return JsonSerializer.Deserialize<T>(json)!;
+    }
+
+    private void VerifyCredentials()
+    {
+        if (Credentials == null)
+        {
+            throw new ThreadsException("Must authenticate to use this API endpoint");
+        }
+
+        if (Credentials.Expiry < DateTime.UtcNow)
+        {
+            throw new ThreadsException("Credentials have expired");
+        }
     }
     
     //
@@ -204,6 +207,8 @@ public class ThreadsClient
 
     public async Task<ThreadsCredentials> Auth_GetLongLivedAccessToken()
     {
+        VerifyCredentials();
+        
         LongLivedAccessTokenRequest request = new LongLivedAccessTokenRequest();
 
         LongLivedAccessTokenResponse
@@ -222,6 +227,8 @@ public class ThreadsClient
     
     public async Task<ThreadsUserProfile> User_GetProfile(string userId)
     {
+        VerifyCredentials();
+        
         GetUserProfileRequest request = new GetUserProfileRequest()
         {
             UserId = userId
