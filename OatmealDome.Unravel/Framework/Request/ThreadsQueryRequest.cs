@@ -2,8 +2,6 @@ namespace OatmealDome.Unravel.Framework.Request;
 
 internal abstract class ThreadsQueryRequest : ThreadsUrlEncodedContentRequest
 {
-    public override HttpMethod Method => HttpMethod.Get;
-
     public override HttpContent? CreateHttpContent()
     {
         return null;

@@ -4,6 +4,8 @@ namespace OatmealDome.Unravel.Authentication;
 
 internal class LongLivedAccessTokenRequest : ThreadsQueryRequest
 {
+    public override HttpMethod Method => HttpMethod.Get;
+    
     public override string Endpoint => "/refresh_access_token";
 
     public override ThreadsRequestAuthenticationType AuthenticationType =>
