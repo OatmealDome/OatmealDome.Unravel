@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Web;
+using DotNext;
 using OatmealDome.Unravel.Authentication;
 using OatmealDome.Unravel.Framework.Request;
 using OatmealDome.Unravel.Framework.Response;
@@ -219,6 +220,114 @@ public class ThreadsClient
         Credentials.Expiry = DateTime.UtcNow.AddSeconds(response.Expiry);
 
         return Credentials;
+    }
+    
+    //
+    // Publishing
+    //
+
+    private async Task<string> Publishing_CreateMediaContainer(CreateMediaContainerRequest request)
+    {
+        VerifyCredentials();
+        
+        request.UserId = Credentials!.UserId;
+
+        CreateMediaContainerResponse
+            response = await SendRequestWithJsonResponse<CreateMediaContainerResponse>(request);
+
+        return response.MediaContainerId;
+    }
+
+    public async Task<string> Publishing_CreateTextMediaContainer(string text, string? replyToId = null)
+    {
+        return await Publishing_CreateMediaContainer(new CreateMediaContainerRequest()
+        {
+            MediaType = "TEXT",
+            Text = text,
+            ReplyToId = replyToId ?? Optional<string>.None
+        });
+    }
+
+    public async Task<string> Publishing_CreateImageMediaContainer(string imageUrl, string? text = null,
+        string? replyToId = null, bool isCarouselItem = false)
+    {
+        if (isCarouselItem)
+        {
+            if (text != null || replyToId != null)
+            {
+                throw new ThreadsException("Can't set text or replyToId when creating a Carousel item");
+            }
+        }
+        
+        return await Publishing_CreateMediaContainer(new CreateMediaContainerRequest()
+        {
+            MediaType = "IMAGE",
+            ImageUrl = imageUrl,
+            Text = text ?? Optional<string>.None,
+            ReplyToId = replyToId ?? Optional<string>.None,
+            IsCarouselItem = isCarouselItem
+        });
+    }
+
+    public async Task<string> Publishing_CreateVideoMediaContainer(string videoUrl, string? text = null,
+        string? replyToId = null, bool isCarouselItem = false)
+    {
+        if (isCarouselItem)
+        {
+            if (text != null || replyToId != null)
+            {
+                throw new ThreadsException("Can't set text or replyToId when creating a Carousel item");
+            }
+        }
+        
+        return await Publishing_CreateMediaContainer(new CreateMediaContainerRequest()
+        {
+            MediaType = "VIDEO",
+            VideoUrl = videoUrl,
+            Text = text ?? Optional<string>.None,
+            ReplyToId = replyToId ?? Optional<string>.None,
+            IsCarouselItem = isCarouselItem
+        });
+    }
+
+    public async Task<string> Publishing_CreateCarouselMediaContainer(List<string> childrenIds, string? text = null,
+        string? replyToId = null)
+    {
+        if (childrenIds.Count == 0)
+        {
+            throw new ThreadsException("Must have at least one child in Carousel");
+        }
+
+        if (childrenIds.Count > 10)
+        {
+            throw new ThreadsException("Maximum number of children in Carousel is 10");
+        }
+        
+        VerifyCredentials();
+        
+        return await Publishing_CreateMediaContainer(new CreateMediaContainerRequest()
+        {
+            MediaType = "CAROUSEL",
+            Children = childrenIds,
+            Text = text ?? Optional<string>.None,
+            ReplyToId = replyToId ?? Optional<string>.None
+        });
+    }
+
+    public async Task<string> Publishing_PublishMediaContainer(string mediaContainerId)
+    {
+        VerifyCredentials();
+        
+        PublishMediaContainerRequest request = new PublishMediaContainerRequest()
+        {
+            UserId = Credentials!.UserId,
+            MediaContainerId = mediaContainerId
+        };
+
+        PublishMediaContainerResponse response =
+            await SendRequestWithJsonResponse<PublishMediaContainerResponse>(request);
+
+        return response.MediaId;
     }
     
     //
