@@ -105,5 +105,19 @@ string containerId = await client.Publishing_CreateCarouselMediaContainer(subCon
 Once a container has been created, it can be published. (If you are publishing an Image or Carousel container, wait at least 30 seconds after creating the container before attempting to publish it. The Threads system requires some time to process uploads.)
 
 ```csharp
-await client.Publishing_PublishMediaContainer(containerId);
+string mediaId = await client.Publishing_PublishMediaContainer(containerId);
+```
+
+#### Quoting Another Post
+
+You can quote another post by specifying its media ID. This works on all media container types.
+
+```csharp
+// Create a post.
+string containerIdOne = await client.Publishing_CreateTextMediaContainer("Hello, World!");
+string mediaIdOne = await client.Publishing_PublishMediaContainer(containerIdOne);
+
+// Create a post that quotes the previous post.
+string containerIdTwo = await client.Publishing_CreateTextMediaContainer("Look at this cool post!", quotedPostId: mediaIdOne);
+await client.Publishing_PublishMediaContainer(containerIdTwo);
 ```
