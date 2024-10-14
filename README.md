@@ -77,10 +77,10 @@ string containerId = await client.Publishing_CreateTextMediaContainer("Hello, Wo
 
 #### Creating an Image Container
 
-Image containers can contain both an image and some optional accompanying text.
+Image containers can contain both an image and some optional accompanying text. You can also specify alt text for accessibility.
 
 ```csharp
-string containerId = await client.Publishing_CreateImageMediaContainer("http://example.com/image.jpg", "Optional text for this container");
+string containerId = await client.Publishing_CreateImageMediaContainer("http://example.com/image.jpg", "Optional text for this container", altText: "Descriptive text for this image.");
 ```
 
 #### Creating a Carousel Container
