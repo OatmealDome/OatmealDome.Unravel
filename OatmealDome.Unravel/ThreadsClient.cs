@@ -359,6 +359,48 @@ public class ThreadsClient
 
         return response.MediaId;
     }
+
+    public async Task<MediaContainerState> Publishing_GetMediaContainerState(string mediaContainerId)
+    {
+        VerifyCredentials();
+
+        GetMediaContainerStatusRequest request = new GetMediaContainerStatusRequest()
+        {
+            MediaContainerId = mediaContainerId
+        };
+
+        GetMediaContainerStatusResponse response =
+            await SendRequestWithJsonResponse<GetMediaContainerStatusResponse>(request);
+
+        MediaContainerStatus status;
+
+        switch (response.Status)
+        {
+            case "EXPIRED":
+                status = MediaContainerStatus.Expired;
+                break;
+            case "ERROR":
+                status = MediaContainerStatus.Error;
+                break;
+            case "FINISHED":
+                status = MediaContainerStatus.Finished;
+                break;
+            case "IN_PROGRESS":
+                status = MediaContainerStatus.InProgress;
+                break;
+            case "PUBLISHED":
+                status = MediaContainerStatus.Published;
+                break;
+            default:
+                throw new ThreadsException($"Unsupported media container status \"{response.Status}\"");
+        }
+
+        return new MediaContainerState()
+        {
+            Status = status,
+            ErrorMessage = response.ErrorMessage
+        };
+    }
     
     //
     // User
