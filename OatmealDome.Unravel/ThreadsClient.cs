@@ -266,24 +266,26 @@ public class ThreadsClient
         return response.MediaContainerId;
     }
 
-    public async Task<string> Publishing_CreateTextMediaContainer(string text, string? replyToId = null)
+    public async Task<string> Publishing_CreateTextMediaContainer(string text, string? replyToId = null,
+        string? quotedPostId = null)
     {
         return await Publishing_CreateMediaContainer(new CreateMediaContainerRequest()
         {
             MediaType = "TEXT",
             Text = text,
-            ReplyToId = replyToId ?? Optional<string>.None
+            ReplyToId = replyToId ?? Optional<string>.None,
+            QuotedPostId = quotedPostId ?? Optional<string>.None
         });
     }
 
     public async Task<string> Publishing_CreateImageMediaContainer(string imageUrl, string? text = null,
-        string? replyToId = null, bool isCarouselItem = false, string? altText = null)
+        string? replyToId = null, bool isCarouselItem = false, string? altText = null, string? quotedPostId = null)
     {
         if (isCarouselItem)
         {
-            if (text != null || replyToId != null)
+            if (text != null || replyToId != null || quotedPostId != null)
             {
-                throw new ThreadsException("Can't set text or replyToId when creating a Carousel item");
+                throw new ThreadsException("Can't set text, replyToId, or quotedPostId when creating a Carousel item");
             }
         }
         
@@ -294,18 +296,19 @@ public class ThreadsClient
             AltText = altText ?? Optional<string>.None,
             Text = text ?? Optional<string>.None,
             ReplyToId = replyToId ?? Optional<string>.None,
+            QuotedPostId = quotedPostId ?? Optional<string>.None,
             IsCarouselItem = isCarouselItem
         });
     }
 
     public async Task<string> Publishing_CreateVideoMediaContainer(string videoUrl, string? text = null,
-        string? replyToId = null, bool isCarouselItem = false, string? altText = null)
+        string? replyToId = null, bool isCarouselItem = false, string? altText = null, string? quotedPostId = null)
     {
         if (isCarouselItem)
         {
-            if (text != null || replyToId != null)
+            if (text != null || replyToId != null || quotedPostId != null)
             {
-                throw new ThreadsException("Can't set text or replyToId when creating a Carousel item");
+                throw new ThreadsException("Can't set text, replyToId, or quotedPostId when creating a Carousel item");
             }
         }
         
@@ -316,12 +319,13 @@ public class ThreadsClient
             AltText = altText ?? Optional<string>.None,
             Text = text ?? Optional<string>.None,
             ReplyToId = replyToId ?? Optional<string>.None,
+            QuotedPostId = quotedPostId ?? Optional<string>.None,
             IsCarouselItem = isCarouselItem
         });
     }
 
     public async Task<string> Publishing_CreateCarouselMediaContainer(List<string> childrenIds, string? text = null,
-        string? replyToId = null)
+        string? replyToId = null, string? quotedPostId = null)
     {
         if (childrenIds.Count == 0)
         {
@@ -340,7 +344,8 @@ public class ThreadsClient
             MediaType = "CAROUSEL",
             Children = childrenIds,
             Text = text ?? Optional<string>.None,
-            ReplyToId = replyToId ?? Optional<string>.None
+            ReplyToId = replyToId ?? Optional<string>.None,
+            QuotedPostId = quotedPostId ?? Optional<string>.None
         });
     }
 

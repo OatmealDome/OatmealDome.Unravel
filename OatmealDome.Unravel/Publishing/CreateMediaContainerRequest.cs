@@ -84,4 +84,11 @@ internal class CreateMediaContainerRequest : ThreadsQueryRequest
         get;
         set;
     }
+
+    [ThreadsUrlEncodedParameterName("quote_post_id")]
+    public Optional<string> QuotedPostId
+    {
+        get;
+        set;
+    }
 }
