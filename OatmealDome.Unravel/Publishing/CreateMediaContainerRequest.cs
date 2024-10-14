@@ -46,6 +46,13 @@ internal class CreateMediaContainerRequest : ThreadsQueryRequest
         set;
     }
 
+    [ThreadsUrlEncodedParameterName("alt_text")]
+    public Optional<string> AltText
+    {
+        get;
+        set;
+    }
+
     [ThreadsUrlEncodedParameterName("is_carousel_item")]
     public Optional<bool> IsCarouselItem
     {

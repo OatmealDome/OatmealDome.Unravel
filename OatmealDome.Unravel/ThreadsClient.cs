@@ -277,7 +277,7 @@ public class ThreadsClient
     }
 
     public async Task<string> Publishing_CreateImageMediaContainer(string imageUrl, string? text = null,
-        string? replyToId = null, bool isCarouselItem = false)
+        string? replyToId = null, bool isCarouselItem = false, string? altText = null)
     {
         if (isCarouselItem)
         {
@@ -291,6 +291,7 @@ public class ThreadsClient
         {
             MediaType = "IMAGE",
             ImageUrl = imageUrl,
+            AltText = altText ?? Optional<string>.None,
             Text = text ?? Optional<string>.None,
             ReplyToId = replyToId ?? Optional<string>.None,
             IsCarouselItem = isCarouselItem
@@ -298,7 +299,7 @@ public class ThreadsClient
     }
 
     public async Task<string> Publishing_CreateVideoMediaContainer(string videoUrl, string? text = null,
-        string? replyToId = null, bool isCarouselItem = false)
+        string? replyToId = null, bool isCarouselItem = false, string? altText = null)
     {
         if (isCarouselItem)
         {
@@ -312,6 +313,7 @@ public class ThreadsClient
         {
             MediaType = "VIDEO",
             VideoUrl = videoUrl,
+            AltText = altText ?? Optional<string>.None,
             Text = text ?? Optional<string>.None,
             ReplyToId = replyToId ?? Optional<string>.None,
             IsCarouselItem = isCarouselItem
